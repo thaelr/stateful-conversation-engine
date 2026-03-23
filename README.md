@@ -14,20 +14,25 @@ Built with n8n, PostgreSQL, Telegram, and LLM APIs, including retry/fallback log
 This layer handles UX control and message admission while registering each dialogue turn as a distinct iteration in the runtime loop. It performs validation, deduplication, and creates turn n as part of the system’s sequential state. 
 
 ### 2. Scene control layer
-The system uses a set of structured extractors for adaptive LLM control: 
+The system uses a set of structured extractors for adaptive LLM control:
 - contextual coherence and scene stability
 - user intent and interaction dynamics within the current context
-- scene-memory deltas: new facts, meaningful changes, and information that should persist across turns 
+- persistent scene-memory deltas for cross-turn continuity
 
 ### 3. Extraction normalization layer
 At this stage, extractor outputs are normalized, JSON payloads are sanitized, and raw model outputs are converted into typed runtime signals for downstream logic. 
 
-### 4. State engine The core of the system is a state computation layer
-That determines the model’s allowed behavior in the current context.
-Normalized extractor signals are scored and used to compute internal interaction states. The control model is inspired by ideas from signal processing and control systems: interaction is treated as a sequence of signals over time, the size of the next step is bounded by context quality, and smooth stable transitions are achieved using EMA, inertia/friction, and hysteresis. 
+### 4. State engine 
+The core of the system is a state computation layer that determines the model’s allowed behavior in the current context. Normalized extractor signals are scored and used to compute internal interaction states. The control model is inspired by ideas from signal processing and control systems: interaction is treated as a sequence of signals over time, the size of the next step is bounded by context quality, and smooth stable transitions are achieved using EMA, inertia/friction, and hysteresis.
 
-### 5. Prompt routing / orchestration layer
+### 5. Prompt Orchestration 
 Based on the computed state, the system dynamically assembles a runtime prompt stack and passes context-appropriate behavioral instructions to the LLM. 
 
-### 6. Recovery & post-processing layer
-This layer performs primary response generation, detects refusals, and triggers retry or fallback paths when generation fails, including multilingual generation issues and provider-side safety filtering. After generation, the response is further validated, cleaned, and prepared for delivery.
+### 6. Generation + Recovery
+This layer handles primary LLM response generation and recovery when generation becomes unreliable. It detects refusals, provider-side safety filtering, and multilingual generation artifacts, then routes the interaction through retry or fallback paths when needed.
+
+### 7. Post-Processing layer
+After generation, the system validates the output, removes model artifacts, and formats the response for final delivery. This keeps the final message clean, stable, and aligned with the runtime’s behavioral constraints.
+
+### 8. Memory & Observability
+This layer updates scene memory, persists runtime traces, and logs model outputs and system behavior for debugging and analysis. It stores scene-memory deltas such as new facts, meaningful changes, and other information that should persist across turns.
