@@ -36,3 +36,8 @@ After generation, the system validates the output, removes model artifacts, and 
 
 ### 8. Memory & Observability
 This layer updates scene memory, persists runtime traces, and logs model outputs and system behavior for debugging and analysis. It stores scene-memory deltas such as new facts, meaningful changes, and other information that should persist across turns.
+
+
+<img width="2740" height="1282" alt="er_ diagrama wh" src="https://github.com/user-attachments/assets/fb2bdaff-36a4-4c4a-b095-bb7c1eac3ec8" />
+
+
