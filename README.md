@@ -1,8 +1,7 @@
 # Stateful Conversation Engine
 Stateful engine for multi-turn LLM interactions with extractors, memory, prompt routing, and recovery.
 
-
-<img width="963" height="739" alt="SCE scheme" src="https://github.com/user-attachments/assets/064b9df6-ca02-46db-ab3d-b81d2354bd24" />
+<img width="3528" height="1978" alt="SCE scheme black" src="https://github.com/user-attachments/assets/20ce5f79-1613-4a9a-bc01-cf961ef2cefd" />
 
 
 ## Overview
