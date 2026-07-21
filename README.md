@@ -1,41 +1,46 @@
 # Stateful Conversation Engine
-Stateful engine for multi-turn LLM interactions with extractors, memory, prompt routing, and recovery.
 
-<img width="3528" height="1978" alt="SCE scheme" src="https://github.com/user-attachments/assets/9f76a388-5d71-490a-b794-51c6b54b983a" />
+A stateful orchestration layer for long-session AI-avatar products and businesses where dialogue is part of monetization.
 
-## Overview
-Designed and built a stateful engine for multi-turn LLM interactions. 
-The system combines structured extractors, a state computation layer, persistent memory, and runtime prompt orchestration to keep long interactions coherent, adaptive, and resilient. 
-Built with n8n, PostgreSQL, Telegram, and LLM APIs, including retry/fallback logic, refusal handling, and observability for production-oriented operation. 
+The engine keeps multi-turn conversations coherent, adapts behavior from runtime state, recovers from unstable generations, and connects dialogue progress to product actions such as memory, media, reminders, and monetization flows.
 
-## Architecture 
-
-### 1. Ingress layer & turn creation 
-This layer handles UX control and message admission while registering each dialogue turn as a distinct iteration in the runtime loop. It performs validation, deduplication, and creates turn n as part of the system’s sequential state. 
-
-### 2. Scene control layer
-The system uses a set of structured extractors for adaptive LLM control:
-- contextual coherence and scene stability
-- user intent and interaction dynamics within the current context
-- persistent scene-memory deltas for cross-turn continuity
-
-### 3. Extraction normalization layer
-At this stage, extractor outputs are normalized, JSON payloads are sanitized, and raw model outputs are converted into typed runtime signals for downstream logic. 
-
-### 4. State engine 
-The core of the system is a state computation layer that determines the model’s allowed behavior in the current context. Normalized extractor signals are scored and used to compute internal interaction states. The control model is inspired by ideas from signal processing and control systems: interaction is treated as a sequence of signals over time, the size of the next step is bounded by context quality, and smooth stable transitions are achieved using EMA, inertia/friction, and hysteresis.
-
-### 5. Prompt Orchestration 
-Based on the computed state, the system dynamically assembles a runtime prompt stack and passes context-appropriate behavioral instructions to the LLM. 
-
-### 6. Generation + Recovery
-This layer handles primary LLM response generation and recovery when generation becomes unreliable. It detects refusals, provider-side safety filtering, and multilingual generation artifacts, then routes the interaction through retry or fallback paths when needed.
-
-### 7. Post-Processing layer
-After generation, the system validates the output, removes model artifacts, and formats the response for final delivery. This keeps the final message clean, stable, and aligned with the runtime’s behavioral constraints.
-
-### 8. Memory & Observability
-This layer updates scene memory, persists runtime traces, and logs model outputs and system behavior for debugging and analysis. It stores scene-memory deltas such as new facts, meaningful changes, and other information that should persist across turns.
+<img width="1429" height="440" alt="flow-diagram" src="https://github.com/user-attachments/assets/a7202aec-2136-4651-a495-116205424504" />
 
 
+## Beta Snapshot
+
+- 289 beta users, 359 sessions, 5,198 dialogue turns — cold, unoptimized traffic from mature-themed roleplay communities
+- One in five sessions passed 30 messages with sustained engagement carrying some users past 100
+- 87.7% of turns were dynamically steered by runtime state
+- Median recovery after a broken/derailed turn: 12 more turns of stable dialogue
+
+[Read the full beta results](./BETA_RESULTS.md)
+
+## What It Solves
+
+Large model providers ship an API, not a memory and instruction architecture around it — businesses have to build that layer themselves to put AI at the core of a product.
+
+Most products on the market are either narrow in scope or don't hold up over long interactions: they lose coherence, forget facts, and degrade past roughly 30 turns.
+
+This engine adds a control layer around the model: it captures the user's message, extracts runtime signals, checks state, assembles behavior instructions, generates a reply, validates it, and updates persistent memory — every turn.
+
+## System Overview
+
+- **Smart message capture** — normalizes the incoming message and checks whether the user's intent is fully captured before moving on
+- **Signal extraction** — reads user intent, context stability, and scene dynamics from the current turn
+- **Memory layer** — reads and writes persistent state (facts, scene progress, continuity) via a dedicated state store
+- **Dynamic instructions** — turns the current state into concrete behavioral guidance for the model, rather than a single static prompt
+- **AI Writer** — generates the reply under those instructions
+- **Validation & recovery** — checks output quality; invalid generations are retried or routed to a fallback instead of shipping a broken reply
+- **State update** — on a valid reply, memory and runtime state are updated before the next turn
+
+## Implementation Note
+
+This repository documents the system at a product and architecture level. Production workflows, prompts, routing rules, and internal heuristics are proprietary.
+
+The model writes. The engine controls.
+
+---
+
+A closer look at how the engine models a conversation → [state-model.md](./state-model.md)
 
