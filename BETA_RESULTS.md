@@ -44,21 +44,21 @@ Most users expected faster progression, while the prompt prioritized realism and
 | Sessions reaching monetization point |    55 |
 | Avg. turns to monetization point     |    38 |
 
-## Post-Beta Modes: Fast vs. Roleplay
+## Post-Beta Modes: Casual vs. Roleplay
 
 After the main beta, a mode switch was added for the remaining ad traffic: one path optimized for faster progression, and another for users who wanted a full roleplay experience.
 
 | Mode     | Users |
 | -------- | ----: |
-| Fun      |    41 |
+| Casual      |    41 |
 | Roleplay |     7 |
 
-In fun mode, 39% of users reached the monetization point — 16 out of 41 — while the median path dropped fourfold, from 38 turns to 9.5.
+In Casual mode, 39% of users reached the monetization point — 16 out of 41 — while the median path dropped fourfold, from 38 turns to 9.5.
 
 | Metric                                         |   Value |
 | ---------------------------------------------- | ------: |
-| Users reaching monetization point in fun mode  | 16 / 41 |
-| Median turns to monetization point in fun mode |     9.5 |
+| Users reaching monetization point in сasual mode  | 16 / 41 |
+| Median turns to monetization point in сasual mode |     9.5 |
 
 The engine can be tuned for different monetization models. Immersive roleplay supports longer narrative progression, while less patient traffic needs faster engagement and a shorter path to conversion. The result depends not just on the model, but on how the conversation logic, runtime modes, and prompt are tuned around it. The same engine can support both longer-form roleplay and faster, higher-frequency interactions.
 
